@@ -5,3 +5,28 @@ scrape_configs:
     static_configs:
       - targets:
         - 'localhost:9090'
+
+  - job_name: 'node resources'
+    dns_sd_configs:
+      - names: ['tasks.node-exp']
+        type: 'A'
+        port: 9100
+    params:
+      collect[]:
+        - cpu
+        - meminfo
+        - diskstats
+        - netdev
+        - netstat
+
+  - job_name: 'node storage'
+    scrape_interval: 1m
+    dns_sd_configs:
+      - names: ['tasks.node-exp']
+        type: 'A'
+        port: 9100
+    params:
+      collect[]:
+        - filefd
+        - filesystem
+        - xfs

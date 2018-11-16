@@ -9,3 +9,8 @@
   * `prometheus_http_response_size_bytes_sum`
   * `prometheus_http_request_duration_seconds_sum`
 
+## Node Health
+
+Add Node Exporter configuration to `docker-compose.yml`.
+
+All containers need to use the same overlay network so that they can communicate with each other.
