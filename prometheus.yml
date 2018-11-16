@@ -20,6 +20,7 @@ scrape_configs:
         - netstat
 
   - job_name: 'node storage'
+    # Override the global default and scrape targets from this job every 1 minute.
     scrape_interval: 1m
     dns_sd_configs:
       - names: ['tasks.node-exp']
@@ -30,3 +31,11 @@ scrape_configs:
         - filefd
         - filesystem
         - xfs
+
+  - job_name: 'cadvisor'
+    # Override the global default and scrape targets from this job every 5 seconds.
+    scrape_interval: 5s
+    dns_sd_configs:
+      - names: ['tasks.cadvisor']
+        type: 'A'
+        port: 8081

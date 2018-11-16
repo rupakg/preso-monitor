@@ -11,6 +11,10 @@
 
 ## Node Health
 
-Add Node Exporter configuration to `docker-compose.yml`.
+Add Node Exporter configuration to `docker-compose.yml` and `prometheus.yml`.
 
 All containers need to use the same overlay network so that they can communicate with each other.
+
+## cAdvisor
+
+Add cAdvisor to `docker-compose.yml` and `prometheus.yml`.
