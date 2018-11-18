@@ -7,10 +7,13 @@ scrape_configs:
         - 'localhost:9090'
 
   - job_name: 'node resources'
-    dns_sd_configs:
-      - names: ['tasks.node-exp']
-        type: 'A'
-        port: 9100
+    static_configs:
+      - targets:
+        - 'node-exp:9100'
+    # dns_sd_configs:
+    #   - names: ['tasks.node-exp']
+    #     type: 'A'
+    #     port: 9100
     params:
       collect[]:
         - cpu
@@ -22,10 +25,13 @@ scrape_configs:
   - job_name: 'node storage'
     # Override the global default and scrape targets from this job every 1 minute.
     scrape_interval: 1m
-    dns_sd_configs:
-      - names: ['tasks.node-exp']
-        type: 'A'
-        port: 9100
+    static_configs:
+      - targets:
+        - 'node-exp:9100'
+    # dns_sd_configs:
+    #   - names: ['tasks.node-exp']
+    #     # type: 'A'
+    #     port: 9100
     params:
       collect[]:
         - filefd
@@ -35,7 +41,10 @@ scrape_configs:
   - job_name: 'cadvisor'
     # Override the global default and scrape targets from this job every 5 seconds.
     scrape_interval: 5s
-    dns_sd_configs:
-      - names: ['tasks.cadvisor']
-        type: 'A'
-        port: 8081
+    static_configs:
+      - targets:
+        - 'cadvisor:8080'
+    # dns_sd_configs:
+    #   - names: ['tasks.cadvisor']
+    #     type: 'A'
+    #     port: 8081

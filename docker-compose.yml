@@ -1,22 +1,30 @@
 version: "3"
 
 services:
-  prom-metrics:
-    image: prom/prometheus
+  prometheus:
+    image: prom/prometheus:v2.1.0
     ports: 
       - 9090:9090/tcp
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus      
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'      
     links:
       - cadvisor:cadvisor
+      - node-exp:node-exp
     depends_on:
-      - cadvisor      
+      - cadvisor
+      - node-exp      
     networks:
       - prom
     restart: always
 
   node-exp:
-    image: prom/node-exporter:v0.15.0
+    image: prom/node-exporter
     ports:
       - 9100:9100
     volumes:
@@ -45,5 +53,25 @@ services:
       - prom
     restart: always
    
+  grafana:
+    image: grafana/grafana
+    user: "104"
+    depends_on:
+      - prometheus
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
+    env_file:
+      - ./grafana/config.monitoring
+    networks:
+      - prom
+    restart: always
+
 networks:
   prom:
+
+volumes:
+  prometheus_data: {}
+  grafana_data: {}  
