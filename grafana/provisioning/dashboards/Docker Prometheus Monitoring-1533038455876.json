@@ -383,7 +383,7 @@
         }
       ],
       "thresholds": "0,1",
-      "title": "Running Containers",
+      "title": "Running Containers (last 5m)",
       "type": "singlestat",
       "valueFontSize": "80%",
       "valueMaps": [

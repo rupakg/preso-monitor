@@ -6,7 +6,7 @@ services:
     ports: 
       - 9090:9090/tcp
     volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/:/etc/prometheus/
       - prometheus_data:/prometheus      
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -16,9 +16,11 @@ services:
     links:
       - cadvisor:cadvisor
       - node-exp:node-exp
+      - alertmanager:alertmanager
     depends_on:
       - cadvisor
       - node-exp      
+      - alertmanager
     networks:
       - prom
     restart: always
@@ -40,6 +42,19 @@ services:
       - prom
     restart: always
   
+  alertmanager:
+    image: prom/alertmanager
+    ports:
+      - 9093:9093
+    volumes:
+      - ./alertmanager/:/etc/alertmanager/
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+      - '--storage.path=/alertmanager'
+    networks:
+      - prom
+    restart: always
+
   cadvisor:
     image: google/cadvisor
     volumes:
