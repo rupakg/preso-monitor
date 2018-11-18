@@ -9,32 +9,32 @@ groups:
     labels:
       severity: page
     annotations:
-      summary: "Instance {{ $labels.instance }} down"
-      description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 2 minutes."
+      summary: "'{{ $labels.instance }}' down"
+      description: "'{{ $labels.instance }}' of job '{{ $labels.job }}' has been down for more than 2 minutes."
 
-  - alert: high_load
-    expr: node_load1 > 0.5
+  - alert: node_high_memory_usage
+    expr: (((node_memory_MemTotal_bytes-node_memory_MemFree_bytes-node_memory_Cached_bytes)/(node_memory_MemTotal_bytes)*100)) > 30
     for: 1m
     labels:
       severity: page
     annotations:
-      summary: "Instance {{ $labels.instance }} under high load"
-      description: "{{ $labels.instance }} of job {{ $labels.job }} is under high load."
+      summary: "'{{ $labels.instance }}' under high memory usage"
+      description: "Node '{{ $labels.instance }}': Memory usage is above 30% (current value is: {{ $value }})."
 
-  - alert: preso_apps_high_memory_usage
+  - alert: preso_high_memory_usage
     expr: container_memory_max_usage_bytes{name=~"preso-app.*"} / 1000000 > 2.5
     for: 1m
     labels:
       severity: page
     annotations:
-      summary: "Container {{ $labels.name }} under preso apps high memory usage"
-      description: "Container {{ $labels.name }} of job {{ $labels.job }} is under preso apps high memory usage."
+      summary: "'{{ $labels.name }}' has high Memory usage"
+      description: "Container '{{ $labels.name }}': Memory usage > 2.5 MB (current value is: {{ $value }})."
 
-  - alert: preso_apps_high_cpu_usage
-    expr: container_cpu_usage_seconds_total{name=~"preso-app.*"} > 2
+  - alert: preso_high_cpu_usage
+    expr: rate(container_cpu_user_seconds_total{name=~"preso-app.*"}[30s]) * 100 > 0
     for: 1m
     labels:
       severity: page
     annotations:
-      summary: "Container {{ $labels.name }} under preso apps high cpu usage"
-      description: "Container {{ $labels.name }} of job {{ $labels.job }} is under preso apps high cpu usage."
+      summary: "'{{ $labels.name }}' has high cpu usage"
+      description: "Container '{{ $labels.name }}': CPU usage > 0% (current value is: {{ $value }})."
