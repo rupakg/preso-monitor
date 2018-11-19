@@ -13,28 +13,28 @@ groups:
       description: "'{{ $labels.instance }}' of job '{{ $labels.job }}' has been down for more than 2 minutes."
 
   - alert: node_high_memory_usage
-    expr: (((node_memory_MemTotal_bytes-node_memory_MemFree_bytes-node_memory_Cached_bytes)/(node_memory_MemTotal_bytes)*100)) > 30
+    expr: (((node_memory_MemTotal_bytes-node_memory_MemFree_bytes-node_memory_Cached_bytes)/(node_memory_MemTotal_bytes)*100)) > 50
     for: 1m
     labels:
       severity: page
     annotations:
       summary: "'{{ $labels.instance }}' under high memory usage"
-      description: "Node '{{ $labels.instance }}': Memory usage is above 30% (current value is: {{ $value }})."
+      description: "Node '{{ $labels.instance }}': Memory usage is above 50% (current value is: {{ $value }})."
 
-  - alert: preso_high_memory_usage
-    expr: container_memory_max_usage_bytes{name=~"preso-app.*"} / 1000000 > 2.5
-    for: 1m
+  - alert: containers_high_memory_usage
+    expr: sum(container_memory_usage_bytes{image!=""}) / sum(node_memory_MemTotal_bytes) * 100 > 50
+    for: 2m
     labels:
       severity: page
     annotations:
-      summary: "'{{ $labels.name }}' has high Memory usage"
-      description: "Container '{{ $labels.name }}': Memory usage > 2.5 MB (current value is: {{ $value }})."
+      summary: "High container memory usage detected."
+      description: "Container Memory usage > 50% (current value is: {{ $value }})."
 
-  - alert: preso_high_cpu_usage
-    expr: rate(container_cpu_user_seconds_total{name=~"preso-app.*"}[30s]) * 100 > 0
-    for: 1m
+  - alert: containers_high_cpu_usage
+    expr: sum(sum by (container_name)( rate(container_cpu_usage_seconds_total[1m] ) )) / count(node_cpu_seconds_total{mode="system"}) * 100 > 50
+    for: 2m
     labels:
       severity: page
     annotations:
-      summary: "'{{ $labels.name }}' has high cpu usage"
-      description: "Container '{{ $labels.name }}': CPU usage > 0% (current value is: {{ $value }})."
+      summary: "High container CPU usage detected."
+      description: "Container CPU usage > 50% (current value is: {{ $value }})."

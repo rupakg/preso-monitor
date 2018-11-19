@@ -45,4 +45,14 @@ View Prometheus alerts `http://localhost:9090/alerts` and view Alert Manager `ht
 
 ### Test Alerts on Slack
 
-A quick test for your alerts is to stop a service. Stop any of the containers and you should notice shortly the alert arrive in Slack.
+A quick test for your alerts is to stop a service. Stop any of the containers and you should notice shortly the alert arrive in Slack. 
+
+To spike the cpu usage and trigger an alert, run: 
+
+```
+$ docker run --rm -it busybox sh -c "while true; do :; done"
+```
+CTRL+C to stop the rouge container.
+
+
+
